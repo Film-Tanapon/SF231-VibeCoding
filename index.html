@@ -8,22 +8,15 @@
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 
   :root {
-    --bg: #080c12;
-    --panel: #0d1420;
-    --border: #1a2840;
+    --bg: #060a0f;
+    --panel: #0a1220;
+    --border: #162236;
     --accent: #00d4ff;
     --accent2: #ff6b35;
     --purple: #9b59ff;
     --green: #00ff88;
     --text: #c8d8f0;
-    --text-dim: #4a6080;
-    --wall: #1e3a5f;
-    --wall-bright: #2a4f80;
-    --frontier: #9b59ff;
-    --visited: #1a3a6a;
-    --path: #ff6b35;
-    --start: #00ff88;
-    --end: #ff2d5b;
+    --text-dim: #3a5070;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,45 +33,52 @@
     padding: 16px;
   }
 
+  /* CRT scanlines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,212,255,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 30% at 80% 100%, rgba(155,89,255,0.04) 0%, transparent 50%);
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(0,212,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 30% at 80% 100%, rgba(155,89,255,0.05) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
   }
 
-  header {
-    text-align: center;
-    margin-bottom: 16px;
-    position: relative;
-    z-index: 1;
+  header { text-align: center; margin-bottom: 16px; position: relative; z-index: 1; }
+
+  @keyframes glitch {
+    0%, 88%, 100% { transform: none; text-shadow: 0 0 20px rgba(0,212,255,0.6), 0 0 60px rgba(0,212,255,0.25); }
+    89% { transform: translate(-3px,0) skew(-2deg); text-shadow: 3px 0 #ff2d5b, -3px 0 var(--accent); }
+    90% { transform: translate(3px,0); }
+    91% { transform: translate(-2px,0); text-shadow: -2px 0 #ff2d5b, 2px 0 var(--accent); }
+    92% { transform: none; }
+    93% { transform: translate(4px,-1px); text-shadow: 4px 0 var(--purple); }
+    94% { transform: none; }
   }
 
   h1 {
     font-family: 'Orbitron', monospace;
     font-weight: 900;
-    font-size: 22px;
-    letter-spacing: 6px;
+    font-size: 24px;
+    letter-spacing: 8px;
     color: var(--accent);
-    text-shadow: 0 0 20px rgba(0,212,255,0.5), 0 0 60px rgba(0,212,255,0.2);
     text-transform: uppercase;
+    animation: glitch 8s infinite;
   }
 
-  h1 span {
-    color: var(--accent2);
-    text-shadow: 0 0 20px rgba(255,107,53,0.5);
-  }
+  h1 span { color: var(--accent2); }
 
-  .subtitle {
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
+  .subtitle { font-size: 10px; letter-spacing: 4px; color: var(--text-dim); margin-top: 4px; }
 
   .main-layout {
     display: flex;
@@ -90,21 +90,16 @@
     max-width: 1100px;
   }
 
-  .left-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 200px;
-    flex-shrink: 0;
+  .left-panel { display: flex; flex-direction: column; gap: 10px; min-width: 200px; flex-shrink: 0; }
+  .right-panel { display: flex; flex-direction: column; gap: 10px; min-width: 180px; flex-shrink: 0; }
+
+  @keyframes slideIn {
+    0% { left: -100%; right: 100%; }
+    50% { left: 0%; right: 0%; }
+    100% { left: 100%; right: -100%; }
   }
 
-  .right-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    min-width: 180px;
-    flex-shrink: 0;
-  }
+  @keyframes panelGlow { 0%,100% { opacity: 0.3; } 50% { opacity: 0.8; } }
 
   .panel {
     background: var(--panel);
@@ -118,10 +113,10 @@
   .panel::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0; left: -100%; right: 100%;
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0.4;
+    animation: slideIn 4s ease-in-out infinite;
   }
 
   .panel-title {
@@ -139,17 +134,13 @@
   .panel-title::before {
     content: '';
     display: block;
-    width: 3px;
-    height: 10px;
+    width: 3px; height: 10px;
     background: var(--accent);
-    box-shadow: 0 0 6px var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: panelGlow 2s infinite;
   }
 
-  .algo-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
+  .algo-list { display: flex; flex-direction: column; gap: 4px; }
 
   .algo-btn {
     background: transparent;
@@ -161,44 +152,29 @@
     cursor: pointer;
     text-align: left;
     border-radius: 3px;
-    transition: all 0.15s;
+    transition: all 0.2s;
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
 
   .algo-btn .algo-name { font-weight: bold; color: var(--text); }
-  .algo-btn .algo-complexity { font-size: 9px; color: var(--text-dim); letter-spacing: 0.5px; }
+  .algo-btn .algo-complexity { font-size: 9px; color: var(--text-dim); }
   .algo-btn .algo-optimal { font-size: 8px; }
 
-  .algo-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(0,212,255,0.05);
-  }
+  .algo-btn:hover { border-color: rgba(0,212,255,0.4); transform: translateX(2px); }
 
   .algo-btn.active {
     border-color: var(--accent);
-    background: rgba(0,212,255,0.1);
-    box-shadow: 0 0 10px rgba(0,212,255,0.2), inset 0 0 10px rgba(0,212,255,0.05);
+    background: rgba(0,212,255,0.08);
+    box-shadow: 0 0 12px rgba(0,212,255,0.15), inset 0 0 12px rgba(0,212,255,0.05);
   }
 
-  .algo-btn.active .algo-name { color: var(--accent); }
+  .algo-btn.active .algo-name { color: var(--accent); text-shadow: 0 0 10px rgba(0,212,255,0.5); }
 
   .control-group { display: flex; flex-direction: column; gap: 6px; }
-
-  .control-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-  }
-
-  .speed-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .control-label { font-size: 9px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+  .speed-row { display: flex; align-items: center; gap: 8px; }
 
   .speed-val {
     font-family: 'Orbitron', monospace;
@@ -206,26 +182,28 @@
     color: var(--accent);
     min-width: 20px;
     text-align: right;
+    text-shadow: 0 0 8px rgba(0,212,255,0.5);
   }
 
   input[type=range] {
     -webkit-appearance: none;
-    width: 100%;
-    height: 3px;
-    background: var(--border);
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
     border-radius: 2px;
     outline: none;
   }
 
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
+    width: 14px; height: 14px;
     background: var(--accent);
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 0 8px var(--accent);
+    box-shadow: 0 0 10px var(--accent), 0 0 20px rgba(0,212,255,0.3);
+    transition: transform 0.1s;
   }
+
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
   .btn {
     background: transparent;
@@ -236,65 +214,44 @@
     cursor: pointer;
     border-radius: 3px;
     letter-spacing: 1px;
-    transition: all 0.15s;
+    transition: all 0.2s;
     width: 100%;
+    overflow: hidden;
+    position: relative;
   }
 
-  .btn-primary {
-    border-color: var(--accent);
-    color: var(--accent);
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    transition: left 0.35s;
   }
 
+  .btn:hover::before { left: 100%; }
+
+  .btn-primary { border-color: var(--accent); color: var(--accent); }
   .btn-primary:hover:not(:disabled) {
-    background: var(--accent);
-    color: var(--bg);
-    box-shadow: 0 0 20px rgba(0,212,255,0.4);
+    background: var(--accent); color: var(--bg);
+    box-shadow: 0 0 25px rgba(0,212,255,0.5), 0 0 50px rgba(0,212,255,0.2);
+    transform: translateY(-1px);
   }
+  .btn-primary:disabled { opacity: 0.25; cursor: not-allowed; }
 
-  .btn-primary:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
+  .btn-secondary { border-color: var(--text-dim); color: var(--text-dim); }
+  .btn-secondary:hover { border-color: var(--text); color: var(--text); }
 
-  .btn-secondary {
-    border-color: var(--text-dim);
-    color: var(--text-dim);
-  }
+  .btn-danger { border-color: #ff2d5b; color: #ff2d5b; }
+  .btn-danger:hover { background: #ff2d5b; color: var(--bg); box-shadow: 0 0 20px rgba(255,45,91,0.4); }
 
-  .btn-secondary:hover {
-    border-color: var(--text);
-    color: var(--text);
-  }
+  .btn-maze { border-color: var(--purple); color: var(--purple); }
+  .btn-maze:hover { background: var(--purple); color: var(--bg); box-shadow: 0 0 20px rgba(155,89,255,0.5); }
 
-  .btn-danger {
-    border-color: #ff2d5b;
-    color: #ff2d5b;
-  }
-
-  .btn-danger:hover {
-    background: #ff2d5b;
-    color: var(--bg);
-  }
-
-  .btn-maze {
-    border-color: var(--purple);
-    color: var(--purple);
-  }
-
-  .btn-maze:hover {
-    background: var(--purple);
-    color: var(--bg);
-    box-shadow: 0 0 20px rgba(155,89,255,0.4);
-  }
-
-  .stat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
   .stat-box {
-    background: rgba(0,0,0,0.3);
+    background: rgba(0,0,0,0.4);
     border: 1px solid var(--border);
     border-radius: 3px;
     padding: 8px;
@@ -306,79 +263,49 @@
     font-size: 18px;
     color: var(--accent);
     line-height: 1;
-    text-shadow: 0 0 10px rgba(0,212,255,0.4);
+    text-shadow: 0 0 10px rgba(0,212,255,0.5);
   }
 
-  .stat-label {
-    font-size: 8px;
-    letter-spacing: 1.5px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
+  .stat-label { font-size: 8px; letter-spacing: 1.5px; color: var(--text-dim); text-transform: uppercase; margin-top: 4px; }
+
+  @keyframes badgePulse { 0%,100% { box-shadow: 0 0 6px currentColor; } 50% { box-shadow: 0 0 18px currentColor; } }
 
   .optimal-badge {
     display: inline-block;
-    padding: 3px 8px;
+    padding: 4px 8px;
     border-radius: 2px;
     font-size: 10px;
     letter-spacing: 2px;
     font-family: 'Orbitron', monospace;
-    width: 100%;
-    text-align: center;
+    width: 100%; text-align: center;
     margin-top: 4px;
   }
 
-  .optimal-badge.yes { background: rgba(0,255,136,0.15); border: 1px solid var(--green); color: var(--green); }
-  .optimal-badge.no  { background: rgba(255,45,91,0.15);  border: 1px solid #ff2d5b; color: #ff2d5b; }
-  .optimal-badge.na  { background: rgba(74,96,128,0.15);  border: 1px solid var(--text-dim); color: var(--text-dim); }
+  .optimal-badge.yes { background: rgba(0,255,136,0.1); border: 1px solid var(--green); color: var(--green); animation: badgePulse 2s infinite; text-shadow: 0 0 10px var(--green); }
+  .optimal-badge.no  { background: rgba(255,45,91,0.1); border: 1px solid #ff2d5b; color: #ff2d5b; }
+  .optimal-badge.na  { background: rgba(74,96,128,0.15); border: 1px solid var(--text-dim); color: var(--text-dim); }
 
   .legend { display: flex; flex-direction: column; gap: 5px; }
-
-  .legend-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 10px;
-    color: var(--text-dim);
-  }
-
-  .legend-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
+  .legend-row { display: flex; align-items: center; gap: 8px; font-size: 10px; color: var(--text-dim); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
 
   .hint-list { display: flex; flex-direction: column; gap: 4px; }
-
-  .hint {
-    font-size: 9px;
-    color: var(--text-dim);
-    line-height: 1.5;
-    padding-left: 8px;
-    border-left: 1px solid var(--border);
-  }
-
+  .hint { font-size: 9px; color: var(--text-dim); line-height: 1.5; padding-left: 8px; border-left: 1px solid var(--border); transition: border-color 0.2s; }
+  .hint:hover { border-color: var(--accent); }
   .hint b { color: var(--text); }
 
-  .canvas-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
+  .canvas-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .canvas-container { position: relative; }
 
   canvas {
     display: block;
     cursor: crosshair;
     border: 1px solid var(--border);
-    box-shadow:
-      0 0 30px rgba(0,212,255,0.08),
-      0 0 60px rgba(0,0,0,0.5);
+    box-shadow: 0 0 40px rgba(0,212,255,0.08), 0 0 80px rgba(0,0,0,0.6);
     border-radius: 3px;
   }
+
+  #overlay { position: absolute; top: 0; left: 0; pointer-events: none; border: none; box-shadow: none; background: transparent; }
 
   .status-bar {
     width: 100%;
@@ -394,28 +321,15 @@
     gap: 8px;
   }
 
-  .status-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--text-dim);
-    flex-shrink: 0;
-  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
 
-  .status-dot.running { background: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse 0.8s infinite; }
-  .status-dot.done { background: var(--green); box-shadow: 0 0 6px var(--green); }
-  .status-dot.error { background: #ff2d5b; box-shadow: 0 0 6px #ff2d5b; }
+  @keyframes pulseRun { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.3; transform:scale(0.6); } }
 
-  @keyframes pulse {
-    0%,100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
+  .status-dot.running { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulseRun 0.6s infinite; }
+  .status-dot.done { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .status-dot.error { background: #ff2d5b; box-shadow: 0 0 8px #ff2d5b; }
 
-  .divider {
-    width: 100%;
-    height: 1px;
-    background: var(--border);
-    margin: 4px 0;
-  }
+  .divider { width: 100%; height: 1px; background: var(--border); margin: 4px 0; }
 </style>
 </head>
 <body>
@@ -427,9 +341,7 @@
 
 <div class="main-layout">
 
-  <!-- LEFT PANEL -->
   <div class="left-panel">
-
     <div class="panel">
       <div class="panel-title">Algorithm</div>
       <div class="algo-list" id="algoList">
@@ -465,8 +377,8 @@
       <div class="panel-title">Speed</div>
       <div class="control-group">
         <div class="speed-row">
-          <input type="range" id="speedSlider" min="1" max="10" value="5">
-          <span class="speed-val" id="speedVal">5</span>
+          <input type="range" id="speedSlider" min="1" max="10" value="3">
+          <span class="speed-val" id="speedVal">3</span>
         </div>
         <div class="control-label" style="font-size:8px">SLOW ←→ FAST</div>
       </div>
@@ -487,48 +399,35 @@
     <div class="panel">
       <div class="panel-title">Legend</div>
       <div class="legend">
-        <div class="legend-row"><div class="legend-dot" style="background:#00ff88;box-shadow:0 0 5px #00ff88"></div>Start node</div>
-        <div class="legend-row"><div class="legend-dot" style="background:#ff2d5b;box-shadow:0 0 5px #ff2d5b"></div>End node</div>
-        <div class="legend-row"><div class="legend-dot" style="background:#1e3a5f"></div>Wall</div>
-        <div class="legend-row"><div class="legend-dot" style="background:#1a3a6a;border:1px solid #2a5a9f"></div>Visited</div>
-        <div class="legend-row"><div class="legend-dot" style="background:#9b59ff;box-shadow:0 0 5px rgba(155,89,255,0.5)"></div>Frontier</div>
-        <div class="legend-row"><div class="legend-dot" style="background:#ff6b35;box-shadow:0 0 5px rgba(255,107,53,0.4)"></div>Path</div>
+        <div class="legend-row"><div class="legend-dot" style="background:#00ff88;box-shadow:0 0 6px #00ff88"></div>Start node</div>
+        <div class="legend-row"><div class="legend-dot" style="background:#ff2d5b;box-shadow:0 0 6px #ff2d5b"></div>End node</div>
+        <div class="legend-row"><div class="legend-dot" style="background:#1a3050"></div>Wall</div>
+        <div class="legend-row"><div class="legend-dot" style="background:#0a1e38;border:1px solid #1a4070"></div>Visited</div>
+        <div class="legend-row"><div class="legend-dot" style="background:#6a19df;box-shadow:0 0 6px rgba(106,25,223,0.6)"></div>Frontier</div>
+        <div class="legend-row"><div class="legend-dot" style="background:#ff6b35;box-shadow:0 0 6px rgba(255,107,53,0.5)"></div>Path</div>
       </div>
     </div>
-
   </div>
 
-  <!-- CANVAS CENTER -->
   <div class="canvas-wrap">
-    <canvas id="grid"></canvas>
+    <div class="canvas-container">
+      <canvas id="grid"></canvas>
+      <canvas id="overlay"></canvas>
+    </div>
     <div class="status-bar">
       <div class="status-dot" id="statusDot"></div>
       <span id="statusText">Ready — select algorithm and click RUN</span>
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
   <div class="right-panel">
-
     <div class="panel">
       <div class="panel-title">Stats</div>
       <div class="stat-grid">
-        <div class="stat-box">
-          <div class="stat-val" id="statVisited">0</div>
-          <div class="stat-label">Visited</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-val" id="statPath">0</div>
-          <div class="stat-label">Path Len</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-val" id="statTime">0</div>
-          <div class="stat-label">ms</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-val" id="statNodes">0</div>
-          <div class="stat-label">Explored</div>
-        </div>
+        <div class="stat-box"><div class="stat-val" id="statVisited">0</div><div class="stat-label">Visited</div></div>
+        <div class="stat-box"><div class="stat-val" id="statPath">0</div><div class="stat-label">Path Len</div></div>
+        <div class="stat-box"><div class="stat-val" id="statTime">0</div><div class="stat-label">ms</div></div>
+        <div class="stat-box"><div class="stat-val" id="statNodes">0</div><div class="stat-label">Explored</div></div>
       </div>
       <div class="optimal-badge na" id="optimalBadge">—</div>
     </div>
@@ -545,483 +444,405 @@
 
     <div class="panel">
       <div class="panel-title">Complexity</div>
-      <div id="complexityBox" style="font-size:11px;line-height:1.8;color:var(--text-dim);">
-        <div><span style="color:var(--accent)">BFS</span> &nbsp;O(V+E) time</div>
-        <div><span style="color:var(--accent)">BFS</span> &nbsp;O(V) space</div>
-        <div style="margin-top:6px;font-size:9px;color:var(--text-dim)">
-          Guarantees shortest path<br>on unweighted graphs
-        </div>
-      </div>
+      <div id="complexityBox" style="font-size:11px;line-height:1.8;color:var(--text-dim);"></div>
     </div>
-
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-// CONSTANTS
-// ═══════════════════════════════════════════════════
+// ─── CONSTANTS ───────────────────────────────────────
 const COLS = 44, ROWS = 22, CELL = 20;
 const W = COLS * CELL, H = ROWS * CELL;
 
 const canvas = document.getElementById('grid');
-canvas.width = W;
-canvas.height = H;
+canvas.width = W; canvas.height = H;
 const ctx = canvas.getContext('2d');
 
-// Cell states
+const overlay = document.getElementById('overlay');
+overlay.width = W; overlay.height = H;
+const octx = overlay.getContext('2d');
+
 const EMPTY = 0, WALL = 1;
 
-// Colors
 const C = {
-  bg:       '#0a1018',
-  grid:     '#111d2e',
-  wall:     '#1e3a5f',
-  wallLine: '#2a4f80',
-  empty:    '#0a1018',
-  visited:  '#0f2a50',
-  visitedB: '#1a4070',
-  frontier: '#4a1a80',
-  frontierB:'#7a30cc',
-  path:     '#c0400a',
-  pathB:    '#ff6b35',
-  start:    '#00c066',
-  startB:   '#00ff88',
-  end:      '#c0003a',
-  endB:     '#ff2d5b',
+  bg:'#07090e', grid:'#0e1824', wall:'#1a3050', wallLine:'#24405f',
+  empty:'#07090e', visited:'#0a1e38', visitedB:'#152d52',
+  frontier:'#38086a', frontierB:'#8a2dff',
+  path:'#a83a08', pathB:'#ff6b35',
+  start:'#009944', startB:'#00ff88',
+  end:'#aa0028', endB:'#ff2d5b',
 };
 
-// ═══════════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════════
-let grid = new Uint8Array(COLS * ROWS); // 0=empty, 1=wall
-let cellState = new Uint8Array(COLS * ROWS); // 0=empty,1=visited,2=frontier,3=path
-let startNode = { c: 3,  r: Math.floor(ROWS/2) };
+// ─── STATE ───────────────────────────────────────────
+let grid = new Uint8Array(COLS * ROWS);
+let cellState = new Uint8Array(COLS * ROWS);
+let startNode = { c: 3, r: Math.floor(ROWS/2) };
 let endNode   = { c: COLS-4, r: Math.floor(ROWS/2) };
 let selectedAlgo = 'bfs';
 let running = false;
 let animFrame = null;
 let mouseDown = false;
-let drawMode = null; // 'wall' or 'clear'
+let drawMode = null;
+let currentPath = [];
 
-// ═══════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════
-const idx = (c, r) => r * COLS + c;
-const inBounds = (c, r) => c >= 0 && c < COLS && r >= 0 && r < ROWS;
-const neighbors4 = (c, r) => {
-  const nb = [];
-  const dirs = [[0,-1],[0,1],[-1,0],[1,0]];
-  for (const [dc,dr] of dirs) {
-    const nc=c+dc, nr=r+dr;
+// ─── PARTICLE SYSTEM ─────────────────────────────────
+class Particle {
+  constructor(x, y, color, speed = 1) {
+    this.x = x; this.y = y;
+    this.vx = (Math.random()-0.5) * 4 * speed;
+    this.vy = (Math.random()-0.5) * 4 * speed;
+    this.life = 1.0;
+    this.decay = 0.022 + Math.random() * 0.04;
+    this.r = Math.random() * 2 + 0.5;
+    this.color = color;
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    this.vx *= 0.92; this.vy *= 0.92;
+    this.life -= this.decay;
+  }
+  draw(c) {
+    if (this.life <= 0) return;
+    c.globalAlpha = this.life * this.life;
+    c.fillStyle = this.color;
+    c.beginPath();
+    c.arc(this.x, this.y, this.r, 0, Math.PI*2);
+    c.fill();
+  }
+}
+
+let particles = [];
+const MAX_PARTICLES = 400;
+
+function spawnParticles(x, y, color, n=3, speed=1) {
+  if (particles.length >= MAX_PARTICLES) return;
+  for (let i=0; i<n; i++) particles.push(new Particle(x, y, color, speed));
+}
+
+// ─── HELPERS ─────────────────────────────────────────
+const idx = (c,r) => r*COLS+c;
+const inBounds = (c,r) => c>=0&&c<COLS&&r>=0&&r<ROWS;
+const neighbors4 = (c,r) => {
+  const nb=[];
+  for (const [dc,dr] of [[0,-1],[0,1],[-1,0],[1,0]]) {
+    const nc=c+dc,nr=r+dr;
     if (inBounds(nc,nr)) nb.push([nc,nr]);
   }
   return nb;
 };
 const manhattan = (c1,r1,c2,r2) => Math.abs(c1-c2)+Math.abs(r1-r2);
 
-// ═══════════════════════════════════════════════════
-// MIN-HEAP
-// ═══════════════════════════════════════════════════
+// ─── MIN-HEAP ────────────────────────────────────────
 class MinHeap {
-  constructor(cmp) {
-    this.data = [];
-    this.cmp = cmp || ((a,b) => a.f - b.f);
-  }
+  constructor(cmp) { this.data=[]; this.cmp=cmp||((a,b)=>a.f-b.f); }
   get size() { return this.data.length; }
-  push(item) {
-    this.data.push(item);
-    this._bubbleUp(this.data.length - 1);
-  }
+  push(item) { this.data.push(item); this._up(this.data.length-1); }
   pop() {
-    const top = this.data[0];
-    const last = this.data.pop();
-    if (this.data.length > 0) {
-      this.data[0] = last;
-      this._sinkDown(0);
-    }
+    const top=this.data[0], last=this.data.pop();
+    if (this.data.length>0) { this.data[0]=last; this._down(0); }
     return top;
   }
-  _bubbleUp(i) {
-    while (i > 0) {
-      const p = (i - 1) >> 1;
-      if (this.cmp(this.data[i], this.data[p]) < 0) {
-        [this.data[i], this.data[p]] = [this.data[p], this.data[i]];
-        i = p;
+  _up(i) {
+    while (i>0) {
+      const p=(i-1)>>1;
+      if (this.cmp(this.data[i],this.data[p])<0) {
+        [this.data[i],this.data[p]]=[this.data[p],this.data[i]]; i=p;
       } else break;
     }
   }
-  _sinkDown(i) {
-    const n = this.data.length;
-    while (true) {
-      let min = i;
-      const l = 2*i+1, r = 2*i+2;
-      if (l < n && this.cmp(this.data[l], this.data[min]) < 0) min = l;
-      if (r < n && this.cmp(this.data[r], this.data[min]) < 0) min = r;
-      if (min !== i) {
-        [this.data[i], this.data[min]] = [this.data[min], this.data[i]];
-        i = min;
-      } else break;
+  _down(i) {
+    const n=this.data.length;
+    while(true) {
+      let m=i,l=2*i+1,r=2*i+2;
+      if (l<n&&this.cmp(this.data[l],this.data[m])<0) m=l;
+      if (r<n&&this.cmp(this.data[r],this.data[m])<0) m=r;
+      if (m!==i) { [this.data[i],this.data[m]]=[this.data[m],this.data[i]]; i=m; }
+      else break;
     }
   }
 }
 
-// ═══════════════════════════════════════════════════
-// ALGORITHMS — return generator yielding steps
-// Each step: { frontier: Set, visited: Set, done: bool, path: [] }
-// ═══════════════════════════════════════════════════
-
-function* bfsGen(sc, sr, ec, er) {
-  // Pointer-based queue (no array.shift)
-  const queue = [{ c: sc, r: sr }];
-  let head = 0;
-  const visited = new Set();
-  const parent = new Map();
-  const startKey = idx(sc,sr);
-  const endKey = idx(ec,er);
-  visited.add(startKey);
-  const frontier = new Set([startKey]);
-
-  while (head < queue.length) {
-    const batch = [];
-    const batchSize = 1;
-    for (let b = 0; b < batchSize && head < queue.length; b++) {
-      batch.push(queue[head++]);
-    }
-    for (const { c, r } of batch) {
-      const key = idx(c,r);
-      frontier.delete(key);
-      if (key === endKey) {
-        yield { frontier: new Set(frontier), visited: new Set(visited), done: true, path: buildPath(parent, sc, sr, ec, er) };
-        return;
-      }
-      for (const [nc,nr] of neighbors4(c,r)) {
-        const nk = idx(nc,nr);
-        if (!visited.has(nk) && grid[nk] !== WALL) {
-          visited.add(nk);
-          frontier.add(nk);
-          parent.set(nk, key);
-          queue.push({ c:nc, r:nr });
-        }
-      }
-    }
-    yield { frontier: new Set(frontier), visited: new Set(visited), done: false, path: [] };
-  }
-  yield { frontier: new Set(), visited: new Set(visited), done: true, path: [] };
-}
-
-function* dfsGen(sc, sr, ec, er) {
-  const stack = [{ c: sc, r: sr }];
-  const visited = new Set();
-  const parent = new Map();
-  const endKey = idx(ec,er);
-
-  while (stack.length > 0) {
-    const { c, r } = stack.pop();
-    const key = idx(c,r);
-    if (visited.has(key)) continue;
-    visited.add(key);
-    const frontier = new Set();
-    for (const s of stack) frontier.add(idx(s.c,s.r));
-
-    if (key === endKey) {
-      yield { frontier, visited: new Set(visited), done: true, path: buildPath(parent, sc, sr, ec, er) };
-      return;
-    }
-    for (const [nc,nr] of neighbors4(c,r)) {
-      const nk = idx(nc,nr);
-      if (!visited.has(nk) && grid[nk] !== WALL) {
-        parent.set(nk, key);
-        stack.push({ c:nc, r:nr });
-      }
-    }
-    yield { frontier, visited: new Set(visited), done: false, path: [] };
-  }
-  yield { frontier: new Set(), visited: new Set(visited), done: true, path: [] };
-}
-
-function* astarGen(sc, sr, ec, er) {
-  const heap = new MinHeap((a,b) => a.f - b.f);
-  heap.push({ c:sc, r:sr, g:0, f: manhattan(sc,sr,ec,er) });
-  const gScore = new Map();
-  const parent = new Map();
-  const closed = new Set();
-  const startKey = idx(sc,sr);
-  const endKey = idx(ec,er);
-  gScore.set(startKey, 0);
-  const inOpen = new Set([startKey]);
-  const visited = new Set();
-
-  while (heap.size > 0) {
-    const { c, r, g } = heap.pop();
-    const key = idx(c,r);
-    if (closed.has(key)) continue;
-    closed.add(key);
-    inOpen.delete(key);
-    visited.add(key);
-
-    if (key === endKey) {
-      yield { frontier: new Set(inOpen), visited: new Set(visited), done: true, path: buildPath(parent, sc, sr, ec, er) };
-      return;
-    }
-    for (const [nc,nr] of neighbors4(c,r)) {
-      const nk = idx(nc,nr);
-      if (closed.has(nk) || grid[nk] === WALL) continue;
-      const ng = g + 1;
-      if (!gScore.has(nk) || ng < gScore.get(nk)) {
-        gScore.set(nk, ng);
-        parent.set(nk, key);
-        const f = ng + manhattan(nc,nr,ec,er);
-        heap.push({ c:nc, r:nr, g:ng, f });
-        inOpen.add(nk);
-      }
-    }
-    yield { frontier: new Set(inOpen), visited: new Set(visited), done: false, path: [] };
-  }
-  yield { frontier: new Set(), visited: new Set(visited), done: true, path: [] };
-}
-
-function* dijkstraGen(sc, sr, ec, er) {
-  const heap = new MinHeap((a,b) => a.dist - b.dist);
-  heap.push({ c:sc, r:sr, dist:0 });
-  const dist = new Map();
-  const parent = new Map();
-  const closed = new Set();
-  const startKey = idx(sc,sr);
-  const endKey = idx(ec,er);
-  dist.set(startKey, 0);
-  const inOpen = new Set([startKey]);
-  const visited = new Set();
-
-  while (heap.size > 0) {
-    const { c, r, dist: d } = heap.pop();
-    const key = idx(c,r);
-    if (closed.has(key)) continue;
-    closed.add(key);
-    inOpen.delete(key);
-    visited.add(key);
-
-    if (key === endKey) {
-      yield { frontier: new Set(inOpen), visited: new Set(visited), done: true, path: buildPath(parent, sc, sr, ec, er) };
-      return;
-    }
-    for (const [nc,nr] of neighbors4(c,r)) {
-      const nk = idx(nc,nr);
-      if (closed.has(nk) || grid[nk] === WALL) continue;
-      const nd = d + 1;
-      if (!dist.has(nk) || nd < dist.get(nk)) {
-        dist.set(nk, nd);
-        parent.set(nk, key);
-        heap.push({ c:nc, r:nr, dist:nd });
-        inOpen.add(nk);
-      }
-    }
-    yield { frontier: new Set(inOpen), visited: new Set(visited), done: false, path: [] };
-  }
-  yield { frontier: new Set(), visited: new Set(visited), done: true, path: [] };
-}
-
-function* greedyGen(sc, sr, ec, er) {
-  const heap = new MinHeap((a,b) => a.h - b.h);
-  heap.push({ c:sc, r:sr, h: manhattan(sc,sr,ec,er) });
-  const visited = new Set();
-  const parent = new Map();
-  const startKey = idx(sc,sr);
-  const endKey = idx(ec,er);
-  visited.add(startKey);
-  const inOpen = new Set([startKey]);
-
-  while (heap.size > 0) {
-    const { c, r } = heap.pop();
-    const key = idx(c,r);
-    inOpen.delete(key);
-
-    if (key === endKey) {
-      yield { frontier: new Set(inOpen), visited: new Set(visited), done: true, path: buildPath(parent, sc, sr, ec, er) };
-      return;
-    }
-    for (const [nc,nr] of neighbors4(c,r)) {
-      const nk = idx(nc,nr);
-      if (visited.has(nk) || grid[nk] === WALL) continue;
-      visited.add(nk);
-      parent.set(nk, key);
-      const h = manhattan(nc,nr,ec,er);
-      heap.push({ c:nc, r:nr, h });
-      inOpen.add(nk);
-    }
-    yield { frontier: new Set(inOpen), visited: new Set(visited), done: false, path: [] };
-  }
-  yield { frontier: new Set(), visited: new Set(visited), done: true, path: [] };
-}
-
-function buildPath(parent, sc, sr, ec, er) {
-  const path = [];
-  const endKey = idx(ec,er);
-  const startKey = idx(sc,sr);
-  let cur = endKey;
-  if (!parent.has(cur) && cur !== startKey) return [];
-  while (cur !== undefined && cur !== startKey) {
-    path.push(cur);
-    cur = parent.get(cur);
-  }
-  if (cur === startKey) path.push(startKey);
+// ─── ALGORITHMS ──────────────────────────────────────
+function buildPath(parent,sc,sr,ec,er) {
+  const path=[], endKey=idx(ec,er), startKey=idx(sc,sr);
+  let cur=endKey;
+  if (!parent.has(cur)&&cur!==startKey) return [];
+  while (cur!==undefined&&cur!==startKey) { path.push(cur); cur=parent.get(cur); }
+  if (cur===startKey) path.push(startKey);
   return path.reverse();
 }
 
-// ═══════════════════════════════════════════════════
-// MAZE GENERATOR — iterative DFS backtracking
-// ═══════════════════════════════════════════════════
+function* bfsGen(sc,sr,ec,er) {
+  const q=[{c:sc,r:sr}]; let head=0;
+  const visited=new Set(), parent=new Map();
+  const startKey=idx(sc,sr), endKey=idx(ec,er);
+  visited.add(startKey);
+  const frontier=new Set([startKey]);
+  while (head<q.length) {
+    const {c,r}=q[head++]; const key=idx(c,r);
+    frontier.delete(key);
+    if (key===endKey) { yield {frontier:new Set(frontier),visited:new Set(visited),done:true,path:buildPath(parent,sc,sr,ec,er)}; return; }
+    for (const [nc,nr] of neighbors4(c,r)) {
+      const nk=idx(nc,nr);
+      if (!visited.has(nk)&&grid[nk]!==WALL) { visited.add(nk); frontier.add(nk); parent.set(nk,key); q.push({c:nc,r:nr}); }
+    }
+    yield {frontier:new Set(frontier),visited:new Set(visited),done:false,path:[]};
+  }
+  yield {frontier:new Set(),visited:new Set(visited),done:true,path:[]};
+}
+
+function* dfsGen(sc,sr,ec,er) {
+  const stack=[{c:sc,r:sr}], visited=new Set(), parent=new Map();
+  const endKey=idx(ec,er);
+  while (stack.length>0) {
+    const {c,r}=stack.pop(); const key=idx(c,r);
+    if (visited.has(key)) continue;
+    visited.add(key);
+    const frontier=new Set(); for (const s of stack) frontier.add(idx(s.c,s.r));
+    if (key===endKey) { yield {frontier,visited:new Set(visited),done:true,path:buildPath(parent,sc,sr,ec,er)}; return; }
+    for (const [nc,nr] of neighbors4(c,r)) {
+      const nk=idx(nc,nr);
+      if (!visited.has(nk)&&grid[nk]!==WALL) { parent.set(nk,key); stack.push({c:nc,r:nr}); }
+    }
+    yield {frontier,visited:new Set(visited),done:false,path:[]};
+  }
+  yield {frontier:new Set(),visited:new Set(visited),done:true,path:[]};
+}
+
+function* astarGen(sc,sr,ec,er) {
+  const heap=new MinHeap((a,b)=>a.f-b.f);
+  heap.push({c:sc,r:sr,g:0,f:manhattan(sc,sr,ec,er)});
+  const gScore=new Map(), parent=new Map(), closed=new Set();
+  const startKey=idx(sc,sr), endKey=idx(ec,er);
+  gScore.set(startKey,0);
+  const inOpen=new Set([startKey]), visited=new Set();
+  while (heap.size>0) {
+    const {c,r,g}=heap.pop(); const key=idx(c,r);
+    if (closed.has(key)) continue;
+    closed.add(key); inOpen.delete(key); visited.add(key);
+    if (key===endKey) { yield {frontier:new Set(inOpen),visited:new Set(visited),done:true,path:buildPath(parent,sc,sr,ec,er)}; return; }
+    for (const [nc,nr] of neighbors4(c,r)) {
+      const nk=idx(nc,nr);
+      if (closed.has(nk)||grid[nk]===WALL) continue;
+      const ng=g+1;
+      if (!gScore.has(nk)||ng<gScore.get(nk)) {
+        gScore.set(nk,ng); parent.set(nk,key);
+        heap.push({c:nc,r:nr,g:ng,f:ng+manhattan(nc,nr,ec,er)}); inOpen.add(nk);
+      }
+    }
+    yield {frontier:new Set(inOpen),visited:new Set(visited),done:false,path:[]};
+  }
+  yield {frontier:new Set(),visited:new Set(visited),done:true,path:[]};
+}
+
+function* dijkstraGen(sc,sr,ec,er) {
+  const heap=new MinHeap((a,b)=>a.dist-b.dist);
+  heap.push({c:sc,r:sr,dist:0});
+  const dist=new Map(), parent=new Map(), closed=new Set();
+  const startKey=idx(sc,sr), endKey=idx(ec,er);
+  dist.set(startKey,0);
+  const inOpen=new Set([startKey]), visited=new Set();
+  while (heap.size>0) {
+    const {c,r,dist:d}=heap.pop(); const key=idx(c,r);
+    if (closed.has(key)) continue;
+    closed.add(key); inOpen.delete(key); visited.add(key);
+    if (key===endKey) { yield {frontier:new Set(inOpen),visited:new Set(visited),done:true,path:buildPath(parent,sc,sr,ec,er)}; return; }
+    for (const [nc,nr] of neighbors4(c,r)) {
+      const nk=idx(nc,nr);
+      if (closed.has(nk)||grid[nk]===WALL) continue;
+      const nd=d+1;
+      if (!dist.has(nk)||nd<dist.get(nk)) { dist.set(nk,nd); parent.set(nk,key); heap.push({c:nc,r:nr,dist:nd}); inOpen.add(nk); }
+    }
+    yield {frontier:new Set(inOpen),visited:new Set(visited),done:false,path:[]};
+  }
+  yield {frontier:new Set(),visited:new Set(visited),done:true,path:[]};
+}
+
+function* greedyGen(sc,sr,ec,er) {
+  const heap=new MinHeap((a,b)=>a.h-b.h);
+  heap.push({c:sc,r:sr,h:manhattan(sc,sr,ec,er)});
+  const visited=new Set(), parent=new Map();
+  const startKey=idx(sc,sr), endKey=idx(ec,er);
+  visited.add(startKey);
+  const inOpen=new Set([startKey]);
+  while (heap.size>0) {
+    const {c,r}=heap.pop(); const key=idx(c,r);
+    inOpen.delete(key);
+    if (key===endKey) { yield {frontier:new Set(inOpen),visited:new Set(visited),done:true,path:buildPath(parent,sc,sr,ec,er)}; return; }
+    for (const [nc,nr] of neighbors4(c,r)) {
+      const nk=idx(nc,nr);
+      if (visited.has(nk)||grid[nk]===WALL) continue;
+      visited.add(nk); parent.set(nk,key);
+      heap.push({c:nc,r:nr,h:manhattan(nc,nr,ec,er)}); inOpen.add(nk);
+    }
+    yield {frontier:new Set(inOpen),visited:new Set(visited),done:false,path:[]};
+  }
+  yield {frontier:new Set(),visited:new Set(visited),done:true,path:[]};
+}
+
+// ─── MAZE GENERATOR ──────────────────────────────────
 function generateMaze() {
-  // Fill everything with walls
-  grid.fill(WALL);
-  cellState.fill(0);
-
-  // Work on odd cells only (maze cells)
-  const mc = Math.floor(COLS / 2);
-  const mr = Math.floor(ROWS / 2);
-
-  const visited = new Uint8Array(mc * mr);
-  const stack = [];
-  const startMc = 0, startMr = 0;
-  visited[startMr * mc + startMc] = 1;
-  stack.push([startMc, startMr]);
-
-  const mazeDirs = [[0,-1],[0,1],[-1,0],[1,0]];
-
-  while (stack.length > 0) {
-    const [mc2, mr2] = stack[stack.length - 1];
-    // Shuffle directions
-    const dirs = mazeDirs.slice().sort(() => Math.random() - 0.5);
-    let found = false;
-    for (const [dc, dr] of dirs) {
-      const nc = mc2 + dc, nr = mr2 + dr;
-      if (nc >= 0 && nc < mc && nr >= 0 && nr < mr && !visited[nr * mc + nc]) {
-        visited[nr * mc + nc] = 1;
-        // Carve passage
-        const gc1 = mc2 * 2 + 1, gr1 = mr2 * 2 + 1;
-        const gc2 = nc  * 2 + 1, gr2 = nr  * 2 + 1;
-        const gWc = gc1 + dc, gWr = gr1 + dr;
-        if (inBounds(gc1,gr1)) grid[idx(gc1,gr1)] = EMPTY;
-        if (inBounds(gWc,gWr)) grid[idx(gWc,gWr)] = EMPTY;
-        if (inBounds(gc2,gr2)) grid[idx(gc2,gr2)] = EMPTY;
-        stack.push([nc, nr]);
-        found = true;
-        break;
+  grid.fill(WALL); cellState.fill(0);
+  const mc=Math.floor(COLS/2), mr=Math.floor(ROWS/2);
+  const visited=new Uint8Array(mc*mr), stack=[[0,0]];
+  visited[0]=1;
+  const dirs=[[0,-1],[0,1],[-1,0],[1,0]];
+  while (stack.length>0) {
+    const [mc2,mr2]=stack[stack.length-1];
+    const shuffled=dirs.slice().sort(()=>Math.random()-0.5);
+    let found=false;
+    for (const [dc,dr] of shuffled) {
+      const nc=mc2+dc, nr=mr2+dr;
+      if (nc>=0&&nc<mc&&nr>=0&&nr<mr&&!visited[nr*mc+nc]) {
+        visited[nr*mc+nc]=1;
+        const gc1=mc2*2+1,gr1=mr2*2+1,gc2=nc*2+1,gr2=nr*2+1;
+        const gWc=gc1+dc,gWr=gr1+dr;
+        if (inBounds(gc1,gr1)) grid[idx(gc1,gr1)]=EMPTY;
+        if (inBounds(gWc,gWr)) grid[idx(gWc,gWr)]=EMPTY;
+        if (inBounds(gc2,gr2)) grid[idx(gc2,gr2)]=EMPTY;
+        stack.push([nc,nr]); found=true; break;
       }
     }
     if (!found) stack.pop();
   }
-
-  // Ensure start/end are accessible
-  grid[idx(startNode.c, startNode.r)] = EMPTY;
-  grid[idx(endNode.c, endNode.r)] = EMPTY;
-  // Clear a bit around start/end
+  grid[idx(startNode.c,startNode.r)]=EMPTY;
+  grid[idx(endNode.c,endNode.r)]=EMPTY;
   for (const [dc,dr] of [[0,0],[1,0],[-1,0],[0,1],[0,-1]]) {
-    const nc=startNode.c+dc, nr=startNode.r+dr;
-    if (inBounds(nc,nr)) grid[idx(nc,nr)] = EMPTY;
-    const nc2=endNode.c+dc, nr2=endNode.r+dr;
-    if (inBounds(nc2,nr2)) grid[idx(nc2,nr2)] = EMPTY;
+    const nc=startNode.c+dc,nr=startNode.r+dr; if (inBounds(nc,nr)) grid[idx(nc,nr)]=EMPTY;
+    const nc2=endNode.c+dc,nr2=endNode.r+dr; if (inBounds(nc2,nr2)) grid[idx(nc2,nr2)]=EMPTY;
   }
-
+  currentPath=[];
   drawAll();
 }
 
-// ═══════════════════════════════════════════════════
-// RENDERING
-// ═══════════════════════════════════════════════════
+// ─── RENDERING ───────────────────────────────────────
 function drawCell(c, r) {
-  const x = c * CELL, y = r * CELL;
-  const k = idx(c, r);
-  const isStart = c === startNode.c && r === startNode.r;
-  const isEnd   = c === endNode.c   && r === endNode.r;
-  const cs = cellState[k];
-  const isWall = grid[k] === WALL;
+  const x=c*CELL, y=r*CELL, k=idx(c,r);
+  const isStart=c===startNode.c&&r===startNode.r;
+  const isEnd=c===endNode.c&&r===endNode.r;
+  const cs=cellState[k];
+
+  ctx.shadowBlur=0; ctx.shadowColor='transparent';
 
   if (isStart) {
-    ctx.fillStyle = C.start;
-    ctx.fillRect(x+1, y+1, CELL-2, CELL-2);
-    ctx.fillStyle = C.startB;
-    ctx.fillRect(x+4, y+4, CELL-8, CELL-8);
+    ctx.fillStyle=C.start; ctx.fillRect(x+1,y+1,CELL-2,CELL-2);
+    ctx.fillStyle=C.startB; ctx.fillRect(x+5,y+5,CELL-10,CELL-10);
     return;
   }
   if (isEnd) {
-    ctx.fillStyle = C.end;
-    ctx.fillRect(x+1, y+1, CELL-2, CELL-2);
-    ctx.fillStyle = C.endB;
-    ctx.fillRect(x+4, y+4, CELL-8, CELL-8);
+    ctx.fillStyle=C.end; ctx.fillRect(x+1,y+1,CELL-2,CELL-2);
+    ctx.fillStyle=C.endB; ctx.fillRect(x+5,y+5,CELL-10,CELL-10);
     return;
   }
-  if (isWall) {
-    ctx.fillStyle = C.wall;
-    ctx.fillRect(x, y, CELL, CELL);
-    ctx.fillStyle = C.wallLine;
-    ctx.fillRect(x, y, CELL, 1);
-    ctx.fillRect(x, y, 1, CELL);
+  if (grid[k]===WALL) {
+    ctx.fillStyle=C.wall; ctx.fillRect(x,y,CELL,CELL);
+    ctx.fillStyle=C.wallLine; ctx.fillRect(x,y,CELL,1); ctx.fillRect(x,y,1,CELL);
     return;
   }
-  if (cs === 3) { // path
-    ctx.fillStyle = C.path;
-    ctx.fillRect(x, y, CELL, CELL);
-    ctx.fillStyle = C.pathB;
-    ctx.fillRect(x+3, y+3, CELL-6, CELL-6);
+  if (cs===3) {
+    ctx.shadowColor=C.pathB; ctx.shadowBlur=8;
+    ctx.fillStyle=C.path; ctx.fillRect(x+1,y+1,CELL-2,CELL-2);
+    ctx.shadowBlur=0;
+    ctx.fillStyle=C.pathB; ctx.fillRect(x+4,y+4,CELL-8,CELL-8);
     return;
   }
-  if (cs === 2) { // frontier
-    ctx.fillStyle = C.frontier;
-    ctx.fillRect(x, y, CELL, CELL);
-    ctx.fillStyle = C.frontierB;
-    ctx.fillRect(x+4, y+4, CELL-8, CELL-8);
+  if (cs===2) {
+    ctx.shadowColor=C.frontierB; ctx.shadowBlur=6;
+    ctx.fillStyle=C.frontier; ctx.fillRect(x+1,y+1,CELL-2,CELL-2);
+    ctx.shadowBlur=0;
+    ctx.fillStyle=C.frontierB; ctx.fillRect(x+5,y+5,CELL-10,CELL-10);
     return;
   }
-  if (cs === 1) { // visited
-    ctx.fillStyle = C.visited;
-    ctx.fillRect(x, y, CELL, CELL);
-    ctx.strokeStyle = C.visitedB;
-    ctx.lineWidth = 0.5;
-    ctx.strokeRect(x+0.5, y+0.5, CELL-1, CELL-1);
+  if (cs===1) {
+    ctx.fillStyle=C.visited; ctx.fillRect(x,y,CELL,CELL);
+    ctx.strokeStyle=C.visitedB; ctx.lineWidth=0.5;
+    ctx.strokeRect(x+0.5,y+0.5,CELL-1,CELL-1);
     return;
   }
-  // empty
-  ctx.fillStyle = C.empty;
-  ctx.fillRect(x, y, CELL, CELL);
+  ctx.fillStyle=C.empty; ctx.fillRect(x,y,CELL,CELL);
 }
 
 function drawGrid() {
-  ctx.strokeStyle = C.grid;
-  ctx.lineWidth = 0.5;
-  for (let c = 0; c <= COLS; c++) {
-    ctx.beginPath(); ctx.moveTo(c*CELL, 0); ctx.lineTo(c*CELL, H); ctx.stroke();
-  }
-  for (let r = 0; r <= ROWS; r++) {
-    ctx.beginPath(); ctx.moveTo(0, r*CELL); ctx.lineTo(W, r*CELL); ctx.stroke();
-  }
+  ctx.shadowBlur=0; ctx.strokeStyle=C.grid; ctx.lineWidth=0.5;
+  for (let c=0;c<=COLS;c++) { ctx.beginPath(); ctx.moveTo(c*CELL,0); ctx.lineTo(c*CELL,H); ctx.stroke(); }
+  for (let r=0;r<=ROWS;r++) { ctx.beginPath(); ctx.moveTo(0,r*CELL); ctx.lineTo(W,r*CELL); ctx.stroke(); }
 }
 
 function drawAll() {
-  ctx.fillStyle = C.bg;
-  ctx.fillRect(0, 0, W, H);
-  for (let r = 0; r < ROWS; r++)
-    for (let c = 0; c < COLS; c++)
-      drawCell(c, r);
+  ctx.fillStyle=C.bg; ctx.fillRect(0,0,W,H);
+  for (let r=0;r<ROWS;r++) for (let c=0;c<COLS;c++) drawCell(c,r);
   drawGrid();
 }
 
-// ═══════════════════════════════════════════════════
-// ANIMATION ENGINE
-// ═══════════════════════════════════════════════════
-const algoComplexity = {
-  bfs:      { time:'O(V + E)', space:'O(V)', note:'Shortest path on unweighted graphs' },
-  dfs:      { time:'O(V + E)', space:'O(V)', note:'May not find shortest path' },
-  astar:    { time:'O(E log V)', space:'O(V)', note:'Optimal with admissible heuristic' },
-  dijkstra: { time:'O(E log V)', space:'O(V)', note:'Optimal for non-negative weights' },
-  greedy:   { time:'O(E log V)', space:'O(V)', note:'Heuristic only, not guaranteed optimal' },
-};
+// ─── PASSIVE OVERLAY ANIMATION ───────────────────────
+let passiveTs = 0;
 
-const algoOptimal = { bfs: true, dfs: false, astar: true, dijkstra: true, greedy: false };
+function passiveLoop(ts) {
+  passiveTs = ts;
+  octx.clearRect(0, 0, W, H);
+
+  // Particles
+  octx.save();
+  particles = particles.filter(p => p.life > 0);
+  for (const p of particles) { p.update(); p.draw(octx); }
+  octx.restore();
+  octx.globalAlpha = 1;
+
+  const t = ts * 0.001;
+
+  // Start node pulsing rings
+  const sx=(startNode.c+0.5)*CELL, sy=(startNode.r+0.5)*CELL;
+  for (let i=0;i<3;i++) {
+    const phase=((t*1.3+i*0.4)%1);
+    const radius=CELL*0.45+phase*CELL*1.3;
+    const alpha=(1-phase)*0.55;
+    octx.beginPath(); octx.arc(sx,sy,radius,0,Math.PI*2);
+    octx.strokeStyle=`rgba(0,255,136,${alpha})`; octx.lineWidth=1.5; octx.stroke();
+  }
+
+  // End node pulsing rings
+  const ex=(endNode.c+0.5)*CELL, ey=(endNode.r+0.5)*CELL;
+  for (let i=0;i<3;i++) {
+    const phase=((t*1.5+i*0.35)%1);
+    const radius=CELL*0.45+phase*CELL*1.1;
+    const alpha=(1-phase)*0.55;
+    octx.beginPath(); octx.arc(ex,ey,radius,0,Math.PI*2);
+    octx.strokeStyle=`rgba(255,45,91,${alpha})`; octx.lineWidth=1.5; octx.stroke();
+  }
+
+  // Path shimmer — moving bright spot along the path
+  if (currentPath.length > 2) {
+    const shimmerPos = (t * 0.6) % 1;
+    const center = Math.floor(shimmerPos * currentPath.length);
+    const range = 8;
+    for (let i=Math.max(0,center-range); i<Math.min(currentPath.length,center+range); i++) {
+      const k=currentPath[i];
+      const pc=k%COLS, pr=Math.floor(k/COLS);
+      const px=(pc+0.5)*CELL, py=(pr+0.5)*CELL;
+      const dist=Math.abs(i-center);
+      const alpha=(1-dist/range)*0.65;
+      octx.beginPath(); octx.arc(px,py,CELL*0.38,0,Math.PI*2);
+      octx.fillStyle=`rgba(255,210,120,${alpha})`; octx.fill();
+    }
+  }
+
+  requestAnimationFrame(passiveLoop);
+}
+requestAnimationFrame(passiveLoop);
+
+// ─── ALGORITHM ENGINE ────────────────────────────────
+const algoComplexity = {
+  bfs:      {time:'O(V + E)',  space:'O(V)', note:'Shortest path on unweighted graphs'},
+  dfs:      {time:'O(V + E)',  space:'O(V)', note:'May not find shortest path'},
+  astar:    {time:'O(E log V)',space:'O(V)', note:'Optimal with admissible heuristic'},
+  dijkstra: {time:'O(E log V)',space:'O(V)', note:'Optimal for non-negative weights'},
+  greedy:   {time:'O(E log V)',space:'O(V)', note:'Heuristic only, not guaranteed optimal'},
+};
+const algoOptimal = {bfs:true,dfs:false,astar:true,dijkstra:true,greedy:false};
 
 function updateComplexityBox() {
-  const info = algoComplexity[selectedAlgo];
-  document.getElementById('complexityBox').innerHTML = `
+  const info=algoComplexity[selectedAlgo];
+  document.getElementById('complexityBox').innerHTML=`
     <div><span style="color:var(--accent)">${selectedAlgo.toUpperCase()}</span></div>
     <div style="margin-top:4px">Time: <span style="color:var(--text)">${info.time}</span></div>
     <div>Space: <span style="color:var(--text)">${info.space}</span></div>
@@ -1030,255 +851,194 @@ function updateComplexityBox() {
 }
 
 function setStatus(text, state) {
-  document.getElementById('statusText').textContent = text;
-  const dot = document.getElementById('statusDot');
-  dot.className = 'status-dot' + (state ? ' '+state : '');
+  document.getElementById('statusText').textContent=text;
+  const dot=document.getElementById('statusDot');
+  dot.className='status-dot'+(state?' '+state:'');
 }
 
-function updateStats(visited, pathLen, timeMs, explored) {
-  document.getElementById('statVisited').textContent = visited;
-  document.getElementById('statPath').textContent = pathLen;
-  document.getElementById('statTime').textContent = timeMs.toFixed(1);
-  document.getElementById('statNodes').textContent = explored;
+function updateStats(visited,pathLen,timeMs,explored) {
+  document.getElementById('statVisited').textContent=visited;
+  document.getElementById('statPath').textContent=pathLen;
+  document.getElementById('statTime').textContent=timeMs.toFixed(1);
+  document.getElementById('statNodes').textContent=explored;
 }
 
 function setOptimal(result) {
-  const badge = document.getElementById('optimalBadge');
-  if (result === null) { badge.className='optimal-badge na'; badge.textContent='—'; }
+  const badge=document.getElementById('optimalBadge');
+  if (result===null) { badge.className='optimal-badge na'; badge.textContent='—'; }
   else if (result) { badge.className='optimal-badge yes'; badge.textContent='✓ OPTIMAL'; }
   else { badge.className='optimal-badge no'; badge.textContent='✗ NOT OPTIMAL'; }
 }
 
 function runAlgorithm() {
   if (running) return;
-  clearPath();
+  clearPath(); currentPath=[];
 
-  const gen = {
-    bfs: bfsGen,
-    dfs: dfsGen,
-    astar: astarGen,
-    dijkstra: dijkstraGen,
-    greedy: greedyGen
-  }[selectedAlgo](startNode.c, startNode.r, endNode.c, endNode.r);
+  const gen={bfs:bfsGen,dfs:dfsGen,astar:astarGen,dijkstra:dijkstraGen,greedy:greedyGen}
+    [selectedAlgo](startNode.c,startNode.r,endNode.c,endNode.r);
 
-  running = true;
-  document.getElementById('runBtn').disabled = true;
-  document.getElementById('stopBtn').disabled = false;
-  setStatus('Running ' + selectedAlgo.toUpperCase() + '...', 'running');
+  running=true;
+  document.getElementById('runBtn').disabled=true;
+  document.getElementById('stopBtn').disabled=false;
+  setStatus('Running '+selectedAlgo.toUpperCase()+'...','running');
   setOptimal(null);
 
-  const speed = parseInt(document.getElementById('speedSlider').value);
-  // Batch sizes: speed 1 = 1, speed 10 = 50
-  const batchSize = Math.max(1, Math.round(Math.pow(speed / 10, 2) * 80 + 1));
-  const interval = Math.max(8, 80 - speed * 7);
-
-  const startTime = performance.now();
-  let totalVisited = 0;
-  let lastFrontier = new Set();
-  let lastVisited = new Set();
+  const speed=parseInt(document.getElementById('speedSlider').value);
+  const batchSize=Math.max(1,Math.round(Math.pow(speed/10,2)*80+1));
+  const startTime=performance.now();
+  let totalVisited=0, lastFrontier=new Set();
 
   function step() {
     if (!running) return;
-
-    for (let b = 0; b < batchSize; b++) {
-      const { value, done: genDone } = gen.next();
+    for (let b=0;b<batchSize;b++) {
+      const {value,done:genDone}=gen.next();
       if (!value) break;
 
-      // Update cell states
+      // Spawn particles on new frontier cells
+      for (const k of value.frontier) {
+        if (!lastFrontier.has(k)) {
+          const fc=k%COLS, fr=Math.floor(k/COLS);
+          spawnParticles((fc+0.5)*CELL,(fr+0.5)*CELL,'#8a2dff',2);
+        }
+      }
+
+      // Update cell states on main canvas
       for (const k of lastFrontier) {
-        if (!value.visited.has(k)) continue;
-        if (cellState[k] === 2) {
-          cellState[k] = 1;
-          const c = k % COLS, r = Math.floor(k / COLS);
-          drawCell(c, r);
+        if (value.visited.has(k)&&cellState[k]===2) {
+          cellState[k]=1; drawCell(k%COLS,Math.floor(k/COLS));
         }
       }
       for (const k of value.frontier) {
-        if (cellState[k] !== 2) {
-          cellState[k] = 2;
-          const c = k % COLS, r = Math.floor(k / COLS);
-          drawCell(c, r);
-        }
+        if (cellState[k]!==2) { cellState[k]=2; drawCell(k%COLS,Math.floor(k/COLS)); }
       }
 
-      lastFrontier = value.frontier;
-      lastVisited = value.visited;
-      totalVisited = value.visited.size;
-
-      updateStats(totalVisited, value.path.length, performance.now() - startTime, totalVisited);
+      lastFrontier=value.frontier;
+      totalVisited=value.visited.size;
+      updateStats(totalVisited,value.path.length,performance.now()-startTime,totalVisited);
 
       if (value.done) {
-        const elapsed = performance.now() - startTime;
+        const elapsed=performance.now()-startTime;
         drawGrid();
-
-        if (value.path.length > 0) {
-          // Animate path
-          let pi = 0;
+        if (value.path.length>0) {
+          currentPath=value.path;
+          let pi=0;
           function animPath() {
-            if (pi < value.path.length) {
-              const k = value.path[pi++];
-              const c = k % COLS, r = Math.floor(k / COLS);
-              if (!(c === startNode.c && r === startNode.r) && !(c === endNode.c && r === endNode.r)) {
-                cellState[k] = 3;
-                drawCell(c, r);
+            if (pi<value.path.length) {
+              const k=value.path[pi++];
+              const pc=k%COLS,pr=Math.floor(k/COLS);
+              if (!(pc===startNode.c&&pr===startNode.r)&&!(pc===endNode.c&&pr===endNode.r)) {
+                cellState[k]=3; drawCell(pc,pr);
+                spawnParticles((pc+0.5)*CELL,(pr+0.5)*CELL,'#ff6b35',3);
               }
-              drawGrid();
-              animFrame = requestAnimationFrame(animPath);
-            } else {
-              finishRun(elapsed, value.path.length, totalVisited);
-            }
+              drawGrid(); animFrame=requestAnimationFrame(animPath);
+            } else { finishRun(elapsed,value.path.length,totalVisited); }
           }
           animPath();
         } else {
-          setStatus('No path found!', 'error');
-          finishRun(elapsed, 0, totalVisited);
+          setStatus('No path found!','error');
+          finishRun(elapsed,0,totalVisited);
         }
         return;
       }
-
       if (genDone) break;
     }
-
-    drawGrid();
-    animFrame = requestAnimationFrame(step);
+    drawGrid(); animFrame=requestAnimationFrame(step);
   }
-
-  animFrame = requestAnimationFrame(step);
+  animFrame=requestAnimationFrame(step);
 }
 
-function finishRun(elapsed, pathLen, visited) {
-  running = false;
-  document.getElementById('runBtn').disabled = false;
-  document.getElementById('stopBtn').disabled = true;
-
-  updateStats(visited, pathLen, elapsed, visited);
-
-  if (pathLen > 0) {
-    const isOptimal = algoOptimal[selectedAlgo];
-    setOptimal(isOptimal);
-    setStatus(`Done! Path: ${pathLen} nodes, Visited: ${visited}, Time: ${elapsed.toFixed(1)}ms`, 'done');
+function finishRun(elapsed,pathLen,visited) {
+  running=false;
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('stopBtn').disabled=true;
+  updateStats(visited,pathLen,elapsed,visited);
+  if (pathLen>0) {
+    setOptimal(algoOptimal[selectedAlgo]);
+    setStatus(`Done! Path: ${pathLen} nodes, Visited: ${visited}, Time: ${elapsed.toFixed(1)}ms`,'done');
+    // Celebration burst at end node
+    const ex=(endNode.c+0.5)*CELL, ey=(endNode.r+0.5)*CELL;
+    const colors=['#00ff88','#ff6b35','#9b59ff','#00d4ff'];
+    for (let i=0;i<40;i++) {
+      particles.push(new Particle(ex,ey,colors[i%colors.length],2.5));
+    }
   } else {
     setOptimal(null);
-    setStatus('No path found — try clearing walls or generating a new maze', 'error');
+    setStatus('No path found — try clearing walls or generating a new maze','error');
   }
 }
 
 function stopRun() {
-  running = false;
+  running=false; currentPath=[];
   if (animFrame) cancelAnimationFrame(animFrame);
-  document.getElementById('runBtn').disabled = false;
-  document.getElementById('stopBtn').disabled = true;
-  setStatus('Stopped', '');
-  drawGrid();
+  document.getElementById('runBtn').disabled=false;
+  document.getElementById('stopBtn').disabled=true;
+  setStatus('Stopped',''); drawGrid();
 }
 
 function clearPath() {
-  for (let i = 0; i < cellState.length; i++) cellState[i] = 0;
-  updateStats(0, 0, 0, 0);
-  setOptimal(null);
-  drawAll();
+  currentPath=[];
+  for (let i=0;i<cellState.length;i++) cellState[i]=0;
+  updateStats(0,0,0,0); setOptimal(null); drawAll();
 }
 
-function clearAll() {
-  grid.fill(EMPTY);
-  clearPath();
-  setStatus('Cleared — ready', '');
-}
+function clearAll() { grid.fill(EMPTY); clearPath(); setStatus('Cleared — ready',''); }
 
-// ═══════════════════════════════════════════════════
-// MOUSE INTERACTIONS
-// ═══════════════════════════════════════════════════
+// ─── MOUSE ───────────────────────────────────────────
 function getCellFromEvent(e) {
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  const c = Math.floor(x / CELL);
-  const r = Math.floor(y / CELL);
-  if (!inBounds(c, r)) return null;
-  return { c, r };
+  const rect=canvas.getBoundingClientRect();
+  const c=Math.floor((e.clientX-rect.left)/CELL);
+  const r=Math.floor((e.clientY-rect.top)/CELL);
+  if (!inBounds(c,r)) return null;
+  return {c,r};
 }
 
-canvas.addEventListener('contextmenu', e => e.preventDefault());
+canvas.addEventListener('contextmenu',e=>e.preventDefault());
 
-canvas.addEventListener('mousedown', e => {
-  if (running) return;
-  e.preventDefault();
-  const cell = getCellFromEvent(e);
-  if (!cell) return;
-  const { c, r } = cell;
-
-  if (e.shiftKey) {
-    // Move start
-    startNode = { c, r };
-    grid[idx(c,r)] = EMPTY;
-    clearPath();
-    return;
-  }
-  if (e.button === 2) {
-    // Move end
-    endNode = { c, r };
-    grid[idx(c,r)] = EMPTY;
-    clearPath();
-    return;
-  }
-  // Left click: toggle wall
-  mouseDown = true;
-  const k = idx(c, r);
-  const isSpecial = (c===startNode.c&&r===startNode.r)||(c===endNode.c&&r===endNode.r);
+canvas.addEventListener('mousedown',e=>{
+  if (running) return; e.preventDefault();
+  const cell=getCellFromEvent(e); if (!cell) return;
+  const {c,r}=cell;
+  if (e.shiftKey) { startNode={c,r}; grid[idx(c,r)]=EMPTY; clearPath(); return; }
+  if (e.button===2) { endNode={c,r}; grid[idx(c,r)]=EMPTY; clearPath(); return; }
+  mouseDown=true;
+  const k=idx(c,r);
+  const isSpecial=(c===startNode.c&&r===startNode.r)||(c===endNode.c&&r===endNode.r);
   if (!isSpecial) {
-    drawMode = grid[k] === WALL ? 'clear' : 'wall';
-    grid[k] = drawMode === 'wall' ? WALL : EMPTY;
-    cellState[k] = 0;
-    drawCell(c, r);
-    drawGrid();
+    drawMode=grid[k]===WALL?'clear':'wall';
+    grid[k]=drawMode==='wall'?WALL:EMPTY; cellState[k]=0;
+    drawCell(c,r); drawGrid();
   }
 });
 
-canvas.addEventListener('mousemove', e => {
-  if (!mouseDown || running) return;
-  const cell = getCellFromEvent(e);
-  if (!cell) return;
-  const { c, r } = cell;
-  const k = idx(c, r);
-  const isSpecial = (c===startNode.c&&r===startNode.r)||(c===endNode.c&&r===endNode.r);
-  if (!isSpecial) {
-    grid[k] = drawMode === 'wall' ? WALL : EMPTY;
-    cellState[k] = 0;
-    drawCell(c, r);
-    drawGrid();
-  }
+canvas.addEventListener('mousemove',e=>{
+  if (!mouseDown||running) return;
+  const cell=getCellFromEvent(e); if (!cell) return;
+  const {c,r}=cell; const k=idx(c,r);
+  const isSpecial=(c===startNode.c&&r===startNode.r)||(c===endNode.c&&r===endNode.r);
+  if (!isSpecial) { grid[k]=drawMode==='wall'?WALL:EMPTY; cellState[k]=0; drawCell(c,r); drawGrid(); }
 });
 
-window.addEventListener('mouseup', () => { mouseDown = false; drawMode = null; });
+window.addEventListener('mouseup',()=>{mouseDown=false;drawMode=null;});
 
-// ═══════════════════════════════════════════════════
-// UI EVENTS
-// ═══════════════════════════════════════════════════
-document.getElementById('algoList').addEventListener('click', e => {
-  const btn = e.target.closest('.algo-btn');
-  if (!btn) return;
-  document.querySelectorAll('.algo-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedAlgo = btn.dataset.algo;
-  updateComplexityBox();
+// ─── UI EVENTS ───────────────────────────────────────
+document.getElementById('algoList').addEventListener('click',e=>{
+  const btn=e.target.closest('.algo-btn'); if (!btn) return;
+  document.querySelectorAll('.algo-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); selectedAlgo=btn.dataset.algo; updateComplexityBox();
 });
-
-document.getElementById('speedSlider').addEventListener('input', e => {
-  document.getElementById('speedVal').textContent = e.target.value;
+document.getElementById('speedSlider').addEventListener('input',e=>{
+  document.getElementById('speedVal').textContent=e.target.value;
 });
+document.getElementById('runBtn').addEventListener('click',runAlgorithm);
+document.getElementById('stopBtn').addEventListener('click',stopRun);
+document.getElementById('clearBtn').addEventListener('click',clearAll);
+document.getElementById('clearPathBtn').addEventListener('click',()=>{ if (!running){ clearPath(); setStatus('Path cleared',''); } });
+document.getElementById('mazeBtn').addEventListener('click',()=>{ if (!running){ generateMaze(); setStatus('Maze generated — click RUN',''); } });
 
-document.getElementById('runBtn').addEventListener('click', runAlgorithm);
-document.getElementById('stopBtn').addEventListener('click', stopRun);
-document.getElementById('clearBtn').addEventListener('click', clearAll);
-document.getElementById('clearPathBtn').addEventListener('click', () => { if (!running) { clearPath(); setStatus('Path cleared', ''); } });
-document.getElementById('mazeBtn').addEventListener('click', () => { if (!running) { generateMaze(); setStatus('Maze generated — click RUN', ''); } });
-
-// ═══════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════
+// ─── INIT ────────────────────────────────────────────
 updateComplexityBox();
 drawAll();
-setStatus('Ready — select algorithm and click RUN', '');
+setStatus('Ready — select algorithm and click RUN','');
 </script>
 </body>
 </html>
