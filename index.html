@@ -180,7 +180,7 @@
     font-family: 'Orbitron', monospace;
     font-size: 14px;
     color: var(--accent);
-    min-width: 20px;
+    min-width: 32px;
     text-align: right;
     text-shadow: 0 0 8px rgba(0,212,255,0.5);
   }
@@ -377,10 +377,10 @@
       <div class="panel-title">Speed</div>
       <div class="control-group">
         <div class="speed-row">
-          <input type="range" id="speedSlider" min="1" max="10" value="3">
-          <span class="speed-val" id="speedVal">3</span>
+          <input type="range" id="speedSlider" min="20" max="400" value="200">
+          <span class="speed-val" id="speedVal">200</span>
         </div>
-        <div class="control-label" style="font-size:8px">SLOW ←→ FAST</div>
+        <div class="control-label" style="font-size:8px">BLOCKS / SEC</div>
       </div>
     </div>
 
@@ -859,7 +859,15 @@ function setStatus(text, state) {
 function updateStats(visited,pathLen,timeMs,explored) {
   document.getElementById('statVisited').textContent=visited;
   document.getElementById('statPath').textContent=pathLen;
-  document.getElementById('statTime').textContent=timeMs.toFixed(1);
+  const timeEl = document.getElementById('statTime');
+  const labelEl = timeEl.nextElementSibling;
+  if (timeMs >= 10000) {
+    timeEl.textContent = (timeMs / 1000).toFixed(1);
+    labelEl.textContent = 's';
+  } else {
+    timeEl.textContent = timeMs.toFixed(1);
+    labelEl.textContent = 'ms';
+  }
   document.getElementById('statNodes').textContent=explored;
 }
 
@@ -883,16 +891,24 @@ function runAlgorithm() {
   setStatus('Running '+selectedAlgo.toUpperCase()+'...','running');
   setOptimal(null);
 
-  const speed=parseInt(document.getElementById('speedSlider').value);
-  const batchSize=Math.max(1,Math.round(Math.pow(speed/10,2)*80+1));
+  const blocksPerSec=parseInt(document.getElementById('speedSlider').value);
+  const msPerBlock=1000/blocksPerSec;
   const startTime=performance.now();
   let totalVisited=0, lastFrontier=new Set();
+  let lastStepTime=performance.now();
 
   function step() {
     if (!running) return;
-    for (let b=0;b<batchSize;b++) {
+    const now=performance.now();
+    // How many blocks should we have processed by now?
+    const elapsed=now-startTime;
+    const targetBlocks=Math.floor(elapsed/msPerBlock);
+    // Process until we catch up to target
+    let processed=0;
+    while(processed<targetBlocks-totalVisited+1){
       const {value,done:genDone}=gen.next();
       if (!value) break;
+      processed++;
 
       // Spawn particles on new frontier cells
       for (const k of value.frontier) {
@@ -914,10 +930,10 @@ function runAlgorithm() {
 
       lastFrontier=value.frontier;
       totalVisited=value.visited.size;
-      updateStats(totalVisited,value.path.length,performance.now()-startTime,totalVisited);
+      updateStats(totalVisited,value.path.length,now-startTime,totalVisited);
 
       if (value.done) {
-        const elapsed=performance.now()-startTime;
+        const elapsed2=performance.now()-startTime;
         drawGrid();
         if (value.path.length>0) {
           currentPath=value.path;
@@ -931,12 +947,12 @@ function runAlgorithm() {
                 spawnParticles((pc+0.5)*CELL,(pr+0.5)*CELL,'#ff6b35',3);
               }
               drawGrid(); animFrame=requestAnimationFrame(animPath);
-            } else { finishRun(elapsed,value.path.length,totalVisited); }
+            } else { finishRun(elapsed2,value.path.length,totalVisited); }
           }
           animPath();
         } else {
           setStatus('No path found!','error');
-          finishRun(elapsed,0,totalVisited);
+          finishRun(elapsed2,0,totalVisited);
         }
         return;
       }
